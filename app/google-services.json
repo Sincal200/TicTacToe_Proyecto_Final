@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "237155379850",
+    "project_id": "tictactoegame-2c2d8",
+    "storage_bucket": "tictactoegame-2c2d8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:237155379850:android:8e076ec5e3fa434ce91b73",
+        "android_client_info": {
+          "package_name": "com.example.tictactoe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "237155379850-58q7sini7e2bv7g04nvmatrqflljloeu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tictactoe",
+            "certificate_hash": "d403ec1e46d7c51ca3a0ab51ea0a7fa956ad62d2"
+          }
+        },
+        {
+          "client_id": "237155379850-b48rau8kd959gmv882t5c704koh767b3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgB-p2FXVq6Udmriy7iRt_CZEfmQdwLSs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "237155379850-b48rau8kd959gmv882t5c704koh767b3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
