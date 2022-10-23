@@ -20,15 +20,6 @@
         <deviceKey>
           <Key>
             <type value="SERIAL_NUMBER" />
-            <value value="adb-R9JN80MDYFJ-pcJYia._adb-tls-connect._tcp" />
-          </Key>
-        </deviceKey>
-      </Target>
-      <Target>
-        <type value="RUNNING_DEVICE_TARGET" />
-        <deviceKey>
-          <Key>
-            <type value="SERIAL_NUMBER" />
             <value value="R9HR3070KLJ" />
           </Key>
         </deviceKey>

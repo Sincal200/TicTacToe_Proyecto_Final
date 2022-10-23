@@ -197,6 +197,7 @@ public class FindGameActivity extends AppCompatActivity {
         Intent i  = new Intent(FindGameActivity.this, GameActivity.class);
         i.putExtra(Constantes.EXTRA_JUGADA_ID ,jugadaId);
         startActivity(i);
+        jugadaId = "";
     }
 
     private void initProgressBar() {
@@ -218,6 +219,32 @@ public class FindGameActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        changeMenuVisibility(true);
+        if(jugadaId != ""){
+            changeMenuVisibility(false);
+            esperarJugador();
+        }else{
+            changeMenuVisibility(true);
+        }
+
+    }
+
+    @Override
+    protected void onStop() {
+        if(listenerRegistration != null){
+            listenerRegistration.remove();
+        }
+
+        if(jugadaId != ""){
+            db.collection("jugadas")
+                    .document(jugadaId)
+                    .delete()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            jugadaId = "";
+                        }
+                    });
+        }
+        super.onStop();
     }
 }
