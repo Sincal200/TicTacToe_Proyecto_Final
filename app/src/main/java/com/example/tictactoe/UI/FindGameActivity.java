@@ -41,7 +41,7 @@ public class FindGameActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore db;
     private FirebaseUser firebaseUser;
-    private String uid, jugadaId;
+    private String uid, jugadaId = "";
     private ListenerRegistration listenerRegistration = null;
     private LottieAnimationView animationView;
 
@@ -127,7 +127,7 @@ public class FindGameActivity extends AppCompatActivity {
 
                                                     final Handler handler = new Handler();
                                                     final Runnable r = new Runnable() {
-                                                        @Override
+
                                                         public void run() {
                                                             startGame();
                                                         }
