@@ -93,6 +93,8 @@ public class FindGameActivity extends AppCompatActivity {
 
     private void buscarJugadaLibre() {
         tvLoadingMessage.setText("Buscando una jugada libre...");
+        animationView.playAnimation();
+
         db.collection("jugadas")
                 .whereEqualTo("jugadorDosId", "")
                 .get()
@@ -103,39 +105,48 @@ public class FindGameActivity extends AppCompatActivity {
                             //No existen partidas libres crear una nueva
                             crearNuevaJugada();
                         } else {
-                            DocumentSnapshot docJugada = task.getResult().getDocuments().get(0);
-                            jugadaId = docJugada.getId();
-                            Jugada jugada = docJugada.toObject(Jugada.class);
-                            jugada.setJugadorDosId(uid);
+                            boolean econtrado = false;
 
-                            db.collection("jugadas")
-                                    .document(jugadaId)
-                                    .set(jugada)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            tvLoadingMessage.setText("Jugada libre encontrada, comiena la partida");
-                                            animationView.setRepeatCount(0);
-                                            animationView.setAnimation("checked_animation.json");
-                                            animationView.playAnimation();
+                            for(DocumentSnapshot docJugada : task.getResult().getDocuments()){
+                                if(!docJugada.get("jugadorUnoId").equals(uid)) {
+                                    econtrado = true;
+                                    jugadaId = docJugada.getId();
+                                    Jugada jugada = docJugada.toObject(Jugada.class);
+                                    jugada.setJugadorDosId(uid);
 
-                                            final Handler handler = new Handler();
-                                            final Runnable r = new Runnable() {
+                                    db.collection("jugadas")
+                                            .document(jugadaId)
+                                            .set(jugada)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
-                                                public void run() {
-                                                    startGame();
-                                                }
-                                            };
+                                                public void onSuccess(Void unused) {
+                                                    tvLoadingMessage.setText("Jugada libre encontrada, comiena la partida");
+                                                    animationView.setRepeatCount(0);
+                                                    animationView.setAnimation("checked_animation.json");
+                                                    animationView.playAnimation();
 
-                                            handler.postDelayed(r,1500);
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            changeMenuVisibility(true);
-                                            Toast.makeText(FindGameActivity.this, "Ocurrió un error al entrar en la jugada", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+                                                    final Handler handler = new Handler();
+                                                    final Runnable r = new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            startGame();
+                                                        }
+                                                    };
+
+                                                    handler.postDelayed(r, 1500);
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    changeMenuVisibility(true);
+                                                    Toast.makeText(FindGameActivity.this, "Ocurrió un error al entrar en la jugada", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                    break;
+                                }
+
+                                if(!econtrado) crearNuevaJugada();
+                            }
                         }
                     }
                 });
