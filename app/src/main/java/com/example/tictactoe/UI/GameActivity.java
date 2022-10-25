@@ -3,11 +3,18 @@ package com.example.tictactoe.UI;
 import android.os.Bundle;
 
 import com.example.tictactoe.R;
+import com.example.tictactoe.app.Constantes;
+import com.example.tictactoe.model.Jugada;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -15,8 +22,27 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.tictactoe.databinding.ActivityGameBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameActivity extends AppCompatActivity {
+
+    List<ImageView> casillas;
+    TextView tvPlayer1, tvPlayer2;
+    FirebaseAuth firebaseAuth;
+    FirebaseFirestore db;
+    String uid, jugadaId="", playerOneName = "",playerTwoName = "";
+    Jugada jugada;
+    ListenerRegistration listenerJugada = null;
+    FirebaseUser firebaseUser;
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityGameBinding binding;
@@ -24,6 +50,8 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
 
         binding = ActivityGameBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -41,6 +69,34 @@ public class GameActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        initViews();
+        initGame();
+    }
+
+    private void initGame() {
+        this.db = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        uid = firebaseUser.getUid();
+
+        Bundle extras = getIntent().getExtras();
+        jugadaId = extras.getString(Constantes.EXTRA_JUGADA_ID);
+    }
+
+    private void initViews() {
+        tvPlayer1 = findViewById(R.id.textViewPlayer1);
+        tvPlayer2 = findViewById(R.id.textViewPlayer2);
+        casillas = new ArrayList<>();
+        casillas.add((ImageView) findViewById(R.id.imageView0));
+        casillas.add((ImageView) findViewById(R.id.imageView1));
+        casillas.add((ImageView) findViewById(R.id.imageView2));
+        casillas.add((ImageView) findViewById(R.id.imageView3));
+        casillas.add((ImageView) findViewById(R.id.imageView4));
+        casillas.add((ImageView) findViewById(R.id.imageView5));
+        casillas.add((ImageView) findViewById(R.id.imageView6));
+        casillas.add((ImageView) findViewById(R.id.imageView7));
+        casillas.add((ImageView) findViewById(R.id.imageView8));
     }
 
     @Override
@@ -49,4 +105,106 @@ public class GameActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        jugadaListener();
+    }
+
+    private void jugadaListener() {
+
+        listenerJugada = db.collection("jugadas")
+                .document(jugadaId)
+                .addSnapshotListener(GameActivity.this, new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if(error != null){
+                            Toast.makeText(GameActivity.this, "Error al obtener los datos de la jugada", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        String source = value != null
+                                && value.getMetadata().hasPendingWrites() ? "Local" : "Server";
+
+                        if(value.exists() && source.equals("Server")){
+                            //Parseando de DocumentSnapshot > Jugada
+                            jugada = value.toObject(Jugada.class);
+                            if(playerOneName.isEmpty() || playerTwoName.isEmpty()){
+                                //Obetener los nombres de usuario de la jugada
+                                getPlayerNames();
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void getPlayerNames() {
+        //Obtener el nombre del player 1
+        db.collection("users")
+                .document(jugada.getJugadorUnoId())
+                .get()
+                .addOnSuccessListener(GameActivity.this, new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        playerOneName = documentSnapshot.get("name").toString();
+                        tvPlayer1.setText(playerOneName);
+                    }
+                });
+
+        //Obtener el nombre del player 2
+        db.collection("users")
+                .document(jugada.getJugadorDosId())
+                .get()
+                .addOnSuccessListener(GameActivity.this, new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        playerTwoName = documentSnapshot.get("name").toString();
+                        tvPlayer2.setText(playerTwoName);
+                    }
+                });
+    }
+
+    @Override
+    protected void onStop() {
+        if(listenerJugada != null) {
+            listenerJugada.remove();
+        }
+        super.onStop();
+    }
+
+    public void casillaSeleccionada(View view) {
+        if(!jugada.getGanadorId().isEmpty()){
+            Toast.makeText(this, "La partida ha terminado", Toast.LENGTH_SHORT).show();
+        }else{
+            if(jugada.isTurnoJugadorUno() && jugada.getJugadorUnoId().equals(uid)){
+                //Esta jugando el jugador 1
+                actualizarJugada(view.getTag().toString());
+            }else if(!jugada.isTurnoJugadorUno() && jugada.getJugadorDosId().equals(uid)){
+                //Esta jugando el jugador 2
+                actualizarJugada(view.getTag().toString());
+            } else {
+                Toast.makeText(this, "No es tu turno aún", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void actualizarJugada(String numeroCasilla) {
+        int posicionCasilla = Integer.parseInt(numeroCasilla);
+
+        if(jugada.getCeldasSeleccionadas().get(posicionCasilla) != 0){
+            Toast.makeText(this, "Seleccione una casilla libre", Toast.LENGTH_SHORT).show();
+        } else {
+            if(jugada.isTurnoJugadorUno()){
+                casillas.get(posicionCasilla).setImageResource(R.drawable.ic_cerrar);
+                jugada.getCeldasSeleccionadas().set(posicionCasilla, 1);
+            } else {
+                casillas.get(posicionCasilla).setImageResource(R.drawable.ic_rec);
+                jugada.getCeldasSeleccionadas().set(posicionCasilla, 2);
+            }
+        }
+
+
+    }
 }
+
+

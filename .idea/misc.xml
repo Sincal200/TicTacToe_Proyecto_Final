@@ -3,14 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/37178/AndroidStudioProjects/TicTacToe/app/src/main/res/drawable/ic_baseline_exit_to_app_24.xml" value="0.2465" />
+        <entry key="..\:/Users/37178/AndroidStudioProjects/TicTacToe/app/src/main/res/drawable/ic_cerrar.xml" value="0.2465" />
         <entry key="..\:/Users/37178/AndroidStudioProjects/TicTacToe/app/src/main/res/drawable/ic_consola.xml" value="0.2265" />
         <entry key="..\:/Users/37178/AndroidStudioProjects/TicTacToe/app/src/main/res/drawable/ic_rango.xml" value="0.2265" />
+        <entry key="..\:/Users/37178/AndroidStudioProjects/TicTacToe/app/src/main/res/drawable/ic_rec.xml" value="0.2465" />
+        <entry key="..\:/Users/37178/AndroidStudioProjects/TicTacToe/app/src/main/res/drawable/ic_rounded_black_square_shape.xml" value="0.2465" />
         <entry key="..\:/Users/37178/AndroidStudioProjects/TicTacToe/app/src/main/res/drawable/ic_tic_tac_toe.xml" value="0.2265" />
         <entry key="..\:/Users/37178/AndroidStudioProjects/TicTacToe/app/src/main/res/layout/activity_find_game.xml" value="0.264" />
         <entry key="..\:/Users/37178/AndroidStudioProjects/TicTacToe/app/src/main/res/layout/activity_game.xml" value="0.25" />
         <entry key="..\:/Users/37178/AndroidStudioProjects/TicTacToe/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/Users/37178/AndroidStudioProjects/TicTacToe/app/src/main/res/layout/activity_registro.xml" value="0.25" />
-        <entry key="..\:/Users/37178/AndroidStudioProjects/TicTacToe/app/src/main/res/layout/content_game.xml" value="0.25" />
+        <entry key="..\:/Users/37178/AndroidStudioProjects/TicTacToe/app/src/main/res/layout/content_game.xml" value="0.264" />
+        <entry key="..\:/Users/37178/AndroidStudioProjects/TicTacToe/app/src/main/res/layout/fragment_first.xml" value="0.25" />
       </map>
     </option>
   </component>

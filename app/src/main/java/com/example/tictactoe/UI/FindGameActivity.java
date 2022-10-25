@@ -219,6 +219,7 @@ public class FindGameActivity extends AppCompatActivity {
         progressBar.setIndeterminate(true);
         tvLoadingMessage.setText("Cargando...");
 
+
         changeMenuVisibility(true);
     }
 
