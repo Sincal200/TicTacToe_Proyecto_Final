@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_view"
@@ -12,8 +13,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:lottie_autoPlay="true"
-        app:lottie_fileName="hello_world.json"
+        app:lottie_autoPlay="false"
+        app:lottie_fileName="111843-winner.json"
         app:lottie_loop="true" />
 
     <TextView
@@ -33,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="texto información"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="@+id/textViewPuntos"
         app:layout_constraintStart_toStartOf="@+id/textViewPuntos"
         app:layout_constraintTop_toBottomOf="@+id/textViewPuntos" />

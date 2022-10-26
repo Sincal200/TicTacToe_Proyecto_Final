@@ -46,10 +46,11 @@ public class GameActivity extends AppCompatActivity {
     TextView tvPlayer1, tvPlayer2;
     FirebaseAuth firebaseAuth;
     FirebaseFirestore db;
-    String uid, jugadaId="", playerOneName = "",playerTwoName = "";
+    String uid, jugadaId="", playerOneName = "",playerTwoName = "", ganadorId="";
     Jugada jugada;
     ListenerRegistration listenerJugada = null;
     FirebaseUser firebaseUser;
+    String nombreJugador;
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityGameBinding binding;
@@ -139,23 +140,29 @@ public class GameActivity extends AppCompatActivity {
                             if(playerOneName.isEmpty() || playerTwoName.isEmpty()){
                                 //Obetener los nombres de usuario de la jugada
                                 getPlayerNames();
+
                             }
 
                             updateUI();
                         }
 
-                        cambioColorJugador();
+                        updatePlayersUI();
                     }
                 });
     }
 
-    private void cambioColorJugador() {
+    private void updatePlayersUI() {
         if(jugada.isTurnoJugadorUno()){
             tvPlayer1.setTextColor(getResources().getColor(R.color.pimary));
             tvPlayer2.setTextColor(getResources().getColor(R.color.colorGris));
         } else {
             tvPlayer1.setTextColor(getResources().getColor(R.color.colorGris));
             tvPlayer2.setTextColor(getResources().getColor(R.color.colorOn));
+        }
+
+        if(!jugada.getGanadorId().isEmpty()){
+            ganadorId = jugada.getGanadorId();
+            mostrarDialogoGameOver();
         }
     }
 
@@ -187,6 +194,10 @@ public class GameActivity extends AppCompatActivity {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         playerOneName = documentSnapshot.get("name").toString();
                         tvPlayer1.setText(playerOneName);
+
+                        if(jugada.getJugadorUnoId().equals(uid)){
+                            nombreJugador = playerOneName;
+                        }
                     }
                 });
 
@@ -199,6 +210,10 @@ public class GameActivity extends AppCompatActivity {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         playerTwoName = documentSnapshot.get("name").toString();
                         tvPlayer2.setText(playerTwoName);
+
+                        if(jugada.getJugadorDosId().equals(uid)){
+                            nombreJugador = playerTwoName;
+                        }
                     }
                 });
     }
@@ -353,6 +368,22 @@ public class GameActivity extends AppCompatActivity {
         builder.setTitle("Game Over");
         builder.setCancelable(false);
         builder.setView(v);
+
+
+        if(ganadorId.equals("EMPATE")){
+
+            tvInformacion.setText("¡" + nombreJugador + " has empatado!");
+            tvPuntos.setText("+1 punto");
+        } else if (ganadorId.equals(uid)){
+            tvInformacion.setText("¡" +nombreJugador + " has gandado!");
+            tvPuntos.setText("+3 puntos");
+        } else {
+            tvInformacion.setText("¡" + nombreJugador + " has perdido!");
+            tvPuntos.setText("0 puntos");
+            gameOverAnimation.setAnimation("112064-thumbs-up-and-down.json");
+        }
+
+        gameOverAnimation.playAnimation();
 
         builder.setPositiveButton("Salir", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
