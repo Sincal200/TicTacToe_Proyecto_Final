@@ -9,6 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="pimary">#73c97c</color>
     <color name="secondary">#4CAF50</color>
-    <color name="on">#FFD04A</color>
+    <color name="colorGris">#8F8F8F</color>
+    <color name="colorOn">#FFD04A</color>
+
 
 </resources>

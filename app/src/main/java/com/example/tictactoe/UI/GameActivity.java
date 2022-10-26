@@ -1,16 +1,20 @@
 package com.example.tictactoe.UI;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import com.example.tictactoe.R;
 import com.example.tictactoe.app.Constantes;
 import com.example.tictactoe.model.Jugada;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -194,16 +198,47 @@ public class GameActivity extends AppCompatActivity {
         if(jugada.getCeldasSeleccionadas().get(posicionCasilla) != 0){
             Toast.makeText(this, "Seleccione una casilla libre", Toast.LENGTH_SHORT).show();
         } else {
-            if(jugada.isTurnoJugadorUno()){
+            if (jugada.isTurnoJugadorUno()) {
                 casillas.get(posicionCasilla).setImageResource(R.drawable.ic_cerrar);
                 jugada.getCeldasSeleccionadas().set(posicionCasilla, 1);
             } else {
                 casillas.get(posicionCasilla).setImageResource(R.drawable.ic_rec);
                 jugada.getCeldasSeleccionadas().set(posicionCasilla, 2);
             }
+
+
+            cambioTurno();
+
+            //Actualizar en Firestore los datos de la jugada
+            db.collection("jugadas")
+                    .document(jugadaId)
+                    .set(jugada)
+                    .addOnSuccessListener(GameActivity.this, new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+
+                        }
+                    }).addOnFailureListener(GameActivity.this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("ERROR", "Error al guardar la jugada");
+                        }
+                    });
         }
 
+    }
 
+    private void cambioTurno() {
+        if(jugada.isTurnoJugadorUno()){
+            tvPlayer1.setTextColor(getResources().getColor(R.color.colorGris));
+            tvPlayer2.setTextColor(getResources().getColor(R.color.colorOn));
+        } else {
+            tvPlayer1.setTextColor(getResources().getColor(R.color.pimary));
+            tvPlayer2.setTextColor(getResources().getColor(R.color.colorGris));
+        }
+
+        //Cambio de Turno
+        jugada.setTurnoJugadorUno(!jugada.isTurnoJugadorUno());
     }
 }
 
