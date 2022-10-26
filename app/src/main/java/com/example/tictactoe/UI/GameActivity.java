@@ -1,8 +1,10 @@
 package com.example.tictactoe.UI;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.tictactoe.R;
 import com.example.tictactoe.app.Constantes;
 import com.example.tictactoe.model.Jugada;
@@ -12,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
@@ -334,6 +337,32 @@ public class GameActivity extends AppCompatActivity {
 
 
         return existe;
+    }
+
+    public void mostrarDialogoGameOver(){
+        // 1. Instantiate an <code><a href="/reference/android/app/AlertDialog.Builder.html">AlertDialog.Builder</a></code> with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        View v = getLayoutInflater().inflate(R.layout.dialogo_game_over,null);
+        //Obtenemos las referencias a los View Components de nuestro layout
+        TextView tvPuntos = v.findViewById(R.id.textViewPuntos);
+        TextView tvInformacion = v.findViewById(R.id.textViewInformacion);
+        LottieAnimationView gameOverAnimation = v.findViewById(R.id.animationView);
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setTitle("Game Over");
+        builder.setCancelable(false);
+        builder.setView(v);
+
+        builder.setPositiveButton("Salir", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                finish();
+            }
+        });
+
+        // 3. Get the <code><a href="/reference/android/app/AlertDialog.html">AlertDialog</a></code> from <code><a href="/reference/android/app/AlertDialog.Builder.html#create()">create()</a></code>
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
 
