@@ -239,7 +239,16 @@ public class GameActivity extends AppCompatActivity {
             }
 
 
-            cambioTurno();
+            if(existeSolucion()){
+                jugada.setGanadorId(uid);
+                Toast.makeText(this, "Hay solución", Toast.LENGTH_SHORT).show();
+            } else if(existeEmpate()) {
+                jugada.setGanadorId("EMPATE");
+                Toast.makeText(this, "Haye empate", Toast.LENGTH_SHORT).show();
+            }else {
+                cambioTurno();
+            }
+
 
             //Actualizar en Firestore los datos de la jugada
             db.collection("jugadas")
@@ -263,6 +272,68 @@ public class GameActivity extends AppCompatActivity {
     private void cambioTurno() {
         //Cambio de Turno
         jugada.setTurnoJugadorUno(!jugada.isTurnoJugadorUno());
+    }
+
+    private boolean existeEmpate(){
+        boolean existe = false;
+
+        //Empate
+        boolean hayCasillaLibre = false;
+        for (int i = 0; i < 9; i++) {
+            if(jugada.getCeldasSeleccionadas().get(i)== 0){
+                hayCasillaLibre = true;
+                break;
+            }
+        }
+
+        if(!hayCasillaLibre) //Empate
+            existe =  true;
+
+            return existe;
+    }
+
+    private boolean existeSolucion(){
+        boolean existe = false;
+
+
+
+            List<Integer> selectedCells = jugada.getCeldasSeleccionadas();
+            if(selectedCells.get(0) == selectedCells.get(1)
+            && selectedCells.get(1) == selectedCells.get(2)
+            && selectedCells.get(2) != 0){ // 0 - 1 - 2
+                existe = true;
+            } else if(selectedCells.get(3) == selectedCells.get(4)
+            && selectedCells.get(4) == selectedCells.get(5)
+            && selectedCells.get(5) != 0) { // 3 - 4  5
+                existe = true;
+            } else if(selectedCells.get(6) == selectedCells.get(7)
+            && selectedCells.get(7) == selectedCells.get(8)
+            && selectedCells.get(8) != 0){ // 6 - 7 - 8
+                existe = true;
+            } else if(selectedCells.get(0) == selectedCells.get(3)
+            && selectedCells.get(3) == selectedCells.get(6)
+            && selectedCells.get(6) != 0){ // 0 - 3 - 6
+                existe = true;
+            } else if(selectedCells.get(1) == selectedCells.get(4)
+            && selectedCells.get(4) == selectedCells.get(7)
+            && selectedCells.get(7) != 0){ // 1 - 4 - 7
+                existe = true;
+            } else if(selectedCells.get(2) == selectedCells.get(5)
+            && selectedCells.get(5) == selectedCells.get(8)
+            && selectedCells.get(8) != 0){ // 2 - 5 - 8
+                existe = true;
+            } else if(selectedCells.get(0) == selectedCells.get(4)
+            && selectedCells.get(4) == selectedCells.get(8)
+            && selectedCells.get(8) != 0){ // 0 - 4 - 8
+                existe = true;
+            } else if(selectedCells.get(2) == selectedCells.get(4)
+            && selectedCells.get(4) == selectedCells.get(6)
+            && selectedCells.get(6) != 0){ // 2 - 4 - 6
+                existe = true;
+            }
+
+
+        return existe;
     }
 }
 
