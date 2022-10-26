@@ -137,9 +137,41 @@ public class GameActivity extends AppCompatActivity {
                                 //Obetener los nombres de usuario de la jugada
                                 getPlayerNames();
                             }
+
+                            updateUI();
                         }
+
+                        cambioColorJugador();
                     }
                 });
+    }
+
+    private void cambioColorJugador() {
+        if(jugada.isTurnoJugadorUno()){
+            tvPlayer1.setTextColor(getResources().getColor(R.color.pimary));
+            tvPlayer2.setTextColor(getResources().getColor(R.color.colorGris));
+        } else {
+            tvPlayer1.setTextColor(getResources().getColor(R.color.colorGris));
+            tvPlayer2.setTextColor(getResources().getColor(R.color.colorOn));
+        }
+    }
+
+    private void updateUI() {
+        for (int i = 0; i < 9; i++) {
+            int casilla = jugada.getCeldasSeleccionadas().get(i);
+            ImageView ivCasillaActual = casillas.get(i);
+
+            if(casilla == 0){
+                ivCasillaActual.setImageResource(R.drawable.ic_rounded_black_square_shape);
+            } else if (casilla == 1) {
+                ivCasillaActual.setImageResource(R.drawable.ic_cerrar);
+            } else {
+                ivCasillaActual.setImageResource(R.drawable.ic_rec);
+            }
+        }
+
+
+
     }
 
     private void getPlayerNames() {
@@ -229,14 +261,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void cambioTurno() {
-        if(jugada.isTurnoJugadorUno()){
-            tvPlayer1.setTextColor(getResources().getColor(R.color.colorGris));
-            tvPlayer2.setTextColor(getResources().getColor(R.color.colorOn));
-        } else {
-            tvPlayer1.setTextColor(getResources().getColor(R.color.pimary));
-            tvPlayer2.setTextColor(getResources().getColor(R.color.colorGris));
-        }
-
         //Cambio de Turno
         jugada.setTurnoJugadorUno(!jugada.isTurnoJugadorUno());
     }
