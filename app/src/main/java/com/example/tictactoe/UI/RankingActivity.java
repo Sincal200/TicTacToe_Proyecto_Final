@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -38,7 +39,7 @@ public class RankingActivity extends AppCompatActivity {
         btnRegresar = findViewById(R.id.btnRankRegresar);
 
         //Query
-        Query query = firebaseFirestore.collection("users").orderBy("points", Query.Direction.DESCENDING).limit(5);
+        Query query = firebaseFirestore.collection("users").orderBy("points", Query.Direction.DESCENDING).limit(3);
         //RecyclerOptions
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
                 .setQuery(query,User.class)
@@ -55,8 +56,8 @@ public class RankingActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull userViewHolder holder, int position, @NonNull User model) {
                 holder.tvRankName.setText(model.getName());
-                holder.tvRankPartidas.setText(model.getPatidasJugadas() + "");
-                holder.tvRnakPuntos.setText(model.getPoints() + "");
+                holder.tvRankPartidas.setText("Partidas Jugadas: " + model.getPatidasJugadas() + "");
+                holder.tvRnakPuntos.setText("Puntos: " + model.getPoints() + "");
             }
         };
 
@@ -72,6 +73,9 @@ public class RankingActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
 
     private class userViewHolder extends RecyclerView.ViewHolder{
 
@@ -102,6 +106,29 @@ public class RankingActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         adapter.startListening();
+    }
+
+    class CustomApdater extends BaseAdapter{
+        @Override
+        public int getCount() {
+            return 0;
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+
+            return view;
+        }
     }
 
 
