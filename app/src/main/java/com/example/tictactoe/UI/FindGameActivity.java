@@ -86,7 +86,7 @@ public class FindGameActivity extends AppCompatActivity {
         btnRanking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(FindGameActivity.this,RankingActivity.class));
             }
         });
     }

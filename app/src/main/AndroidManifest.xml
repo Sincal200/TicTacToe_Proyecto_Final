@@ -17,7 +17,7 @@
         android:theme="@style/Theme.TicTacToe"
         tools:targetApi="31">
         <activity
-            android:name=".RankinActivity"
+            android:name=".UI.RankingActivity"
             android:exported="false" />
         <activity
             android:name=".UI.GameActivity"
