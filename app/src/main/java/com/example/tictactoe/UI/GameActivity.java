@@ -8,6 +8,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.example.tictactoe.R;
 import com.example.tictactoe.app.Constantes;
 import com.example.tictactoe.model.Jugada;
+import com.example.tictactoe.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
@@ -51,6 +52,7 @@ public class GameActivity extends AppCompatActivity {
     ListenerRegistration listenerJugada = null;
     FirebaseUser firebaseUser;
     String nombreJugador;
+    User userPlayer1, userPlayer2;
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityGameBinding binding;
@@ -192,6 +194,7 @@ public class GameActivity extends AppCompatActivity {
                 .addOnSuccessListener(GameActivity.this, new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        userPlayer1 = documentSnapshot.toObject(User.class);
                         playerOneName = documentSnapshot.get("name").toString();
                         tvPlayer1.setText(playerOneName);
 
@@ -208,6 +211,7 @@ public class GameActivity extends AppCompatActivity {
                 .addOnSuccessListener(GameActivity.this, new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        userPlayer2 = documentSnapshot.toObject(User.class);
                         playerTwoName = documentSnapshot.get("name").toString();
                         tvPlayer2.setText(playerTwoName);
 
@@ -371,13 +375,15 @@ public class GameActivity extends AppCompatActivity {
 
 
         if(ganadorId.equals("EMPATE")){
-
+            actualizarPuntuacion(1);
             tvInformacion.setText("¡" + nombreJugador + " has empatado!");
             tvPuntos.setText("+1 punto");
         } else if (ganadorId.equals(uid)){
+            actualizarPuntuacion(3);
             tvInformacion.setText("¡" +nombreJugador + " has gandado!");
             tvPuntos.setText("+3 puntos");
         } else {
+            actualizarPuntuacion(0);
             tvInformacion.setText("¡" + nombreJugador + " has perdido!");
             tvPuntos.setText("0 puntos");
             gameOverAnimation.setAnimation("68436-you-lose.json");
@@ -394,6 +400,35 @@ public class GameActivity extends AppCompatActivity {
         // 3. Get the <code><a href="/reference/android/app/AlertDialog.html">AlertDialog</a></code> from <code><a href="/reference/android/app/AlertDialog.Builder.html#create()">create()</a></code>
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void actualizarPuntuacion(int puntosConseguidos) {
+        User jugadorActualizar = null;
+        if(nombreJugador.equals(userPlayer1.getName())){
+            userPlayer1.setPoints(userPlayer1.getPoints() + puntosConseguidos);
+            userPlayer1.setPatidasJugadas(userPlayer1.getPatidasJugadas() + 1);
+            jugadorActualizar = userPlayer1;
+        } else {
+            userPlayer2.setPoints(userPlayer2.getPoints() + puntosConseguidos);
+            userPlayer2.setPatidasJugadas(userPlayer2.getPatidasJugadas() + 1);
+            jugadorActualizar = userPlayer2;
+        }
+
+        db.collection("users")
+                .document(uid)
+                .set(jugadorActualizar)
+                .addOnSuccessListener(GameActivity.this, new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+
+                    }
+                })
+                .addOnFailureListener(GameActivity.this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
     }
 }
 
