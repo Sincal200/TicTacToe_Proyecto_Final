@@ -362,7 +362,7 @@ public class GameActivity extends AppCompatActivity {
         //Obtenemos las referencias a los View Components de nuestro layout
         TextView tvPuntos = v.findViewById(R.id.textViewPuntos);
         TextView tvInformacion = v.findViewById(R.id.textViewInformacion);
-        LottieAnimationView gameOverAnimation = v.findViewById(R.id.animationView);
+        LottieAnimationView gameOverAnimation = v.findViewById(R.id.animation_view);
 
         // 2. Chain together various setter methods to set the dialog characteristics
         builder.setTitle("Game Over");
@@ -380,7 +380,7 @@ public class GameActivity extends AppCompatActivity {
         } else {
             tvInformacion.setText("¡" + nombreJugador + " has perdido!");
             tvPuntos.setText("0 puntos");
-            gameOverAnimation.setAnimation("112064-thumbs-up-and-down.json");
+            gameOverAnimation.setAnimation("68436-you-lose.json");
         }
 
         gameOverAnimation.playAnimation();
