@@ -1,4 +1,4 @@
 # TicTacToe_Proyecto_Final
 Proyecto Final del curso de programación
 
-Integrantes: Julio SIncal
+Integrantes: Julio Sincal
